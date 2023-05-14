@@ -2,5 +2,7 @@ import { createApp } from 'vue'
 import * as echarts from "echarts"
 import App from './App.vue'
 
-Vue.prototype.$echarts = echarts;
-createApp(App).mount('#app')
+const app = createApp(App);
+app.config.globalProperties.$echarts = echarts;
+
+app.mount('#app');
