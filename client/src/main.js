@@ -1,8 +1,15 @@
-import { createApp } from 'vue'
-import * as echarts from "echarts"
+import Vue from 'vue'
 import App from './App.vue'
+import router from './router'
+import 'echarts/lib/chart/map'
+import 'echarts/lib/chart/line'
+import 'echarts/lib/component/visualMap'
+import 'echarts/map/js/world'
+import './styles/init.styl'
 
-const app = createApp(App);
-app.config.globalProperties.$echarts = echarts;
+Vue.config.productionTip = false
 
-app.mount('#app');
+new Vue({
+  router,
+  render: h => h(App)
+}).$mount('#app')
