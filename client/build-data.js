@@ -3,8 +3,12 @@ let pinyin = require('pinyin')
 const fs = require('fs')
 
 const request = axios.create({
-  baseURL: 'https://view.inews.qq.com/g2'
-})
+  baseURL: 'https://view.inews.qq.com/g2',
+  headers: {
+    'Content-Type': 'application/json;charset=utf-8'
+  }
+});
+
 
 function transformChinaData (provinces) {
   provinces.forEach(province => {
@@ -38,6 +42,8 @@ function transformChinaData (provinces) {
 function getData () {
   request.get('/getOnsInfo?name=disease_h5')
     .then(res => {
+      console.log(res.data.data)
+      return
       let rawData = JSON.parse(res.data.data)
       let provinces = rawData.areaTree[0].children
 
@@ -45,7 +51,18 @@ function getData () {
       fs.writeFileSync('./src/data/area.json', JSON.stringify(rawData))
     })
 }
-function getdata(){
+//province:beijing or shanghai ..exmample
+function getProvince(province){
+  const req= axios.create({
+    baseURL: 'https://gwpre.sina.cn/interface/news/ncp/data.d.json?mod=province&province='+province
+  })
+  req.get('')
+  .then(res=>{
+    rawData=res.data.data
+    fs.writeFileSync('./src/data/province.json', JSON.stringify(rawData))
+  })
+}
+function getAll(){
   const req= axios.create({
     baseURL: 'https://interface.sina.cn/news/wap/fymap2020_data.d.json'
   })
@@ -53,11 +70,10 @@ function getdata(){
   .then(res=>{
     //let rawData = JSON.parse(res.data.replace(/^jsoncallback\(|\)\;/g, '')).data.list
     console.log(res.data)
-    let rawData=JSON.parse(res.data)
-    console.log(res.data)
+    let rawData=res.data
     fs.writeFileSync('./src/data/a.json', JSON.stringify(rawData))
   })
 
 }
-getdata()
+getAll()
 //getData()
