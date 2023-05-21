@@ -60,9 +60,9 @@ function getProvince(province){
   .then(res=>{
     rawData=res.data.data
     res=[]
-    //统一输入为1050向量,因为有些地区开始时间相差几天,不利于之后模型的训练
+    //统一输入为1051向量,因为有些地区开始时间相差几天,不利于之后模型的训练
     for(let i=0;i<1050;i++){
-        let mid=rawData['historylist'][i]['conNum']
+        let mid=rawData['historylist'][i]['conadd']
         res.push(mid)
     }
     res=res.reverse()
