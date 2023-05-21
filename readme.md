@@ -9,3 +9,5 @@
 # json文件解析
 1. all.json:包含全国信息,信息截止2022.12.20,包含全国疫情数据变化,在`historylist`中
 2. province.json:包含各省份信息,使用时先使用build-data中`getProvince`函数抓取对应省份信息，具体变化数据在historylist键中
+# 省份数据获取
+1. 运行`node getProvince.js`命令,获取所有省份数据,并以csv的形式保存在provinces文件夹中

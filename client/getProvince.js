@@ -59,8 +59,22 @@ function getProvince(province){
   req.get('')
   .then(res=>{
     rawData=res.data.data
-    console.log(rawData['historylist'][0]['conNum'])
-    fs.writeFileSync('./src/data/province.json', JSON.stringify(rawData))
+    res=[]
+    //统一输入为1050向量,因为有些地区开始时间相差几天,不利于之后模型的训练
+    for(let i=0;i<1050;i++){
+        let mid=rawData['historylist'][i]['conNum']
+        res.push(mid)
+    }
+    res=res.reverse()
+    console.log(`数组长度为${res.length}`);
+    res = res.join('\n');
+    fs.writeFile(`provinces/${province}.csv`, res, 'utf8', (err) => {
+        if (err) {
+          console.error('写入文件时发生错误:', err);
+        } else {
+          console.log(`数据已成功写入到 ${province}.csv 文件`);
+        }
+    });
   })
 }
 function getAll(){
@@ -76,6 +90,15 @@ function getAll(){
   })
 
 }
-//getAll()
-getProvince('shanghai')
+const provinces = [
+    'anhui', 'beijing', 'chongqing', 'fujian', 'gansu', 'guangdong', 'guangxi',
+    'guizhou', 'hainan', 'hebei', 'heilongjiang', 'henan', 'hubei', 'hunan',
+    'jiangsu', 'jiangxi', 'jilin', 'liaoning', 'neimenggu', 'ningxia',
+    'qinghai', 'shanxis', 'shandong', 'shanghai','shanxi', 'sichuan', 'tianjin',
+    'xizang', 'xinjiang', 'yunnan', 'zhejiang'
+  ];
+provinces.forEach(function(element){
+    getProvince(element);
+});
+//getProvince('shanghai')
 //getData()
