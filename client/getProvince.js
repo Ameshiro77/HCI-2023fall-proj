@@ -68,7 +68,7 @@ function getProvince(province){
     res=res.reverse()
     console.log(`数组长度为${res.length}`);
     res = res.join('\n');
-    fs.writeFile(`provinces/${province}.csv`, res, 'utf8', (err) => {
+    fs.writeFile(`../server/provinces/${province}.csv`, res, 'utf8', (err) => {
         if (err) {
           console.error('写入文件时发生错误:', err);
         } else {
