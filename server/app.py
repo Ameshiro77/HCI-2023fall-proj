@@ -1,30 +1,56 @@
-# 请开发时终端输入：set FLASK_ENV=development（windows系统下）
-# flask version：2.1.3
-# reference：https://tutorial.helloflask.com/
-from flask import Flask,render_template
-app = Flask(__name__)
+# 运行此函数以搭建后端，提供api。
+# ==================================
+from flask import Flask, jsonify, abort, request, make_response, url_for, redirect, render_template, Response
+from flask_httpauth import HTTPBasicAuth
+from flask_cors import *
+from werkzeug.utils import secure_filename
+import os
+import shutil
+import numpy as np
+from tensorflow.python.platform import gfile
+import PIL
+# ==================================
 
-name = 'Grey Li'
-movies = [
-    {'title': 'My Neighbor Totoro', 'year': '1988'},
-    {'title': 'Dead Poets Society', 'year': '1989'},
-    {'title': 'A Perfect World', 'year': '1993'},
-    {'title': 'Leon', 'year': '1994'},
-    {'title': 'Mahjong', 'year': '1996'},
-    {'title': 'Swallowtail Butterfly', 'year': '1996'},
-    {'title': 'King of Comedy', 'year': '1999'},
-    {'title': 'Devils on the Doorstep', 'year': '1999'},
-    {'title': 'WALL-E', 'year': '2008'},
-    {'title': 'The Pork of Music', 'year': '2012'},
-]
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+app = Flask(__name__,
+            static_folder="./template",
+            template_folder="./template",
+            static_url_path="")
+CORS(app, supports_credentials=True)  # 跨域
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+auth = HTTPBasicAuth()
 
-#注册一个处理函数(不是装饰器)，即视图函数 用户访问对应url就会触发对应函数
-#如果我们这里定义的 URL规则是/hello，那么完整 URL 就是 http://localhost:5000/hello
-#服务器获得函数返回值然后返给浏览器 后者接受相应把值显示出来
-@app.route('/')  
-def index():
-    return render_template('index.html',name=name,movies=movies)
-    
-if __name__ == "__main__":
-    print(__name__)
-    #app.run(host='127.0.0.1', port=8080)
+def getData(province_name):
+    pass
+
+#================================================#
+#                 以下是对API的定义               #
+#================================================#
+
+"""
+用于根据 现有数据 输入模型 返回结果
+"""
+@app.route('/predict', methods=['GET'])
+def predict():
+    result = 'static/result'  # 结果放到/static/result
+    if not gfile.Exists(result):  # 如果没有就开一个新的
+        os.mkdir(result)
+    shutil.rmtree(result)  # 先删除下面所有文件 也就是过往记录
+
+    name = request.values.get('province_name')  # 前端传一个省份名字的参数
+
+    # ========= 修改部分 ========== #
+    data = getData(name)   # 需要自定义getData函数，根据城市名，传递一个数组：该数组包含这个城市的预测值（也可以加上已有值）
+    return jsonify(data)
+
+#================================================#
+#                 主 函 数 入 口                 #
+#================================================#
+@app.route("/")
+def main():
+    return render_template('index.html', name='index')
+
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=8080)
