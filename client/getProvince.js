@@ -59,21 +59,47 @@ function getProvince(province){
   req.get('')
   .then(res=>{
     rawData=res.data.data
-    res=[]
+    res=[];
+    asympto=[];
+    conums=[]
     //统一输入为1051向量,因为有些地区开始时间相差几天,不利于之后模型的训练
     for(let i=0;i<1050;i++){
-        let mid=rawData['historylist'][i]['conadd']
-        res.push(mid)
+        let mid=rawData['historylist'][i]['conadd']   //确诊新增
+        let asymptomatic=rawData['historylist'][i]['locAsymNum']  //无症状新增
+        x=parseInt(asymptomatic)
+        if(x<0||String(x)=='NaN')x=0
+        let conum=parseInt(mid)+x; //每日阳性新增
+        res.push(mid);
+        asympto.push(x);
+        conums.push(conum);
     }
-    res=res.reverse()
+    res=res.reverse();
+    asympto=asympto.reverse();
+    conums=conums.reverse();
     console.log(`数组长度为${res.length}`);
     res = res.join('\n');
-    fs.writeFile(`../server/provinces/${province}.csv`, res, 'utf8', (err) => {
+    conums = conums.join('\n');
+    asympto = asympto.join('\n');
+    fs.writeFile(`../server/data/confirmed/${province}_confirmed.csv`, res, 'utf8', (err) => {
         if (err) {
           console.error('写入文件时发生错误:', err);
         } else {
           console.log(`数据已成功写入到 ${province}.csv 文件`);
         }
+    });
+    fs.writeFile(`../server/data/asymptomatic/${province}_asymptomatic.csv`, asympto, 'utf8', (err) => {
+      if (err) {
+        console.error('写入文件时发生错误:', err);
+      } else {
+        console.log(`数据已成功写入到 ${province}.csv 文件`);
+      }
+    });
+    fs.writeFile(`../server/data/num/${province}_num.csv`, conums, 'utf8', (err) => {
+      if (err) {
+        console.error('写入文件时发生错误:', err);
+      } else {
+        console.log(`数据已成功写入到 ${province}.csv 文件`);
+      }
     });
   })
 }
