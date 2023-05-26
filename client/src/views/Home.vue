@@ -8,17 +8,8 @@
 
     <e-summary :total="total" :today="today"></e-summary>
 
-    <figure>
-      <e-charts
-        ref="map"
-        :options="map"
-        :init-options="initOptions"
-        autoresize
-        @click="handleClick"
-      ></e-charts>
-    </figure>
-
-    <figure>
+  <div class="all">
+    <figure class="left_pic">
       <e-charts
         ref="line"
         :options="chinaDayList"
@@ -27,6 +18,18 @@
         @click="handleClick"
       ></e-charts>
     </figure>
+    <figure style="width:40%">
+      <e-charts
+        ref="map"
+        :options="map"
+        :init-options="initOptions"
+        autoresize
+      ></e-charts>
+    </figure>
+    <div>
+    <advice></advice>
+    </div>
+   </div>
 
     <div class="section-title">国内病例</div>
     <e-table :data="table"></e-table>
@@ -40,12 +43,13 @@ import ETable from '../components/Table.vue'
 import ECharts from '../components/ECharts.vue'
 import ESummary from '../components/Summary.vue'
 import { getNameByPinyin, getPinyinByName } from '../data/zhen'
-
+import advice from '../components/advice.vue'
 export default {
   components: {
     ETable,
     ECharts,
-    ESummary
+    ESummary,
+    advice
   },
   data () {
     return {
@@ -106,3 +110,16 @@ export default {
   }
 }
 </script>
+<style>
+.left_pic{
+  width: 30%;
+  border: 1px solid #999;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+.all{
+  margin-top: 20px;
+  display:flex;
+  width:100%;
+}
+
+</style>
