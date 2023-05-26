@@ -7,7 +7,8 @@ from werkzeug.utils import secure_filename
 import os
 import shutil
 import numpy as np
-from tensorflow.python.platform import gfile
+import pandas as pd
+#from tensorflow.python.platform import gfile
 import PIL
 # ==================================
 
@@ -20,9 +21,20 @@ app = Flask(__name__,
 CORS(app, supports_credentials=True)  # 跨域
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 auth = HTTPBasicAuth()
-
+"""
+return:
+    confirmed:list of the predict result of confirmed
+    num:list of the predict result of num
+"""
 def getData(province_name):
-    pass
+    confirmed_file=f'results/results_confirmed/{province_name}.csv'
+    num_file=f'results/results_num/{province_name}.csv'
+    confirmed = pd.read_csv(confirmed_file)
+    confirmed  = confirmed .values.tolist()
+    num = pd.read_csv(num_file)
+    num  = num .values.tolist()
+    res=[confirmed,num]
+    return res
 
 #================================================#
 #                 以下是对API的定义               #
@@ -33,10 +45,6 @@ def getData(province_name):
 """
 @app.route('/predict', methods=['GET'])
 def predict():
-    result = 'static/result'  # 结果放到/static/result
-    if not gfile.Exists(result):  # 如果没有就开一个新的
-        os.mkdir(result)
-    shutil.rmtree(result)  # 先删除下面所有文件 也就是过往记录
 
     name = request.values.get('province_name')  # 前端传一个省份名字的参数
 
