@@ -4,12 +4,7 @@ from flask import Flask, jsonify, abort, request, make_response, url_for, redire
 from flask_httpauth import HTTPBasicAuth
 from flask_cors import *
 from werkzeug.utils import secure_filename
-import os
-import shutil
-import numpy as np
 import pandas as pd
-#from tensorflow.python.platform import gfile
-import PIL
 # ==================================
 
 UPLOAD_FOLDER = 'uploads'

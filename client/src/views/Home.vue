@@ -1,11 +1,13 @@
 <template>
   <div>
+    <!-- Header：标题和截止时间 -->
     <div class="data-statement">
       <div class="statement-title">全国疫情状况</div>
       <div class="update-time">截止 {{updateTime}}</div>
       <div class="shuoming" @click="handleModal"><span>数据说明</span></div>
     </div>
 
+    <!-- 总的疫情数据统计 -->
     <e-summary :total="total" :today="today"></e-summary>
 
   <div class="all">
@@ -70,6 +72,8 @@ export default {
       let provincePinyin = getPinyinByName(params.name)
       this.$router.push(`/${provincePinyin}`)
     },
+
+    // 该函数为：点击数据说明，然后弹出画面
     handleModal () {
       EAlert({
         title: '数据说明',
@@ -88,6 +92,7 @@ export default {
         `
       })
     }
+    
   },
   created () {
     let province = this.$route.path.substr(1)
