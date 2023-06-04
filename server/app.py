@@ -28,7 +28,8 @@ def getData(province_name):
     confirmed  = confirmed .values.tolist()
     num = pd.read_csv(num_file)
     num  = num .values.tolist()
-    res=[confirmed,num]
+    date = "2022.1.2"
+    res=[confirmed,num,date]
     return res
 
 #================================================#
