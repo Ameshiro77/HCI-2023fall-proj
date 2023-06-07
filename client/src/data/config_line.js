@@ -4,7 +4,7 @@ export default function buildLineConfig (xAxis, dataConfirm, dataSuspect, dataDe
       text: '疫情累计趋势(人)'
     },
     legend: {
-      data: ['累计确诊', '累计疑似', '累计死亡'],
+      data: ['累计确诊', '累计治愈', '累计死亡'],
       top: '25',
       left: '0'
     },
@@ -34,7 +34,7 @@ export default function buildLineConfig (xAxis, dataConfirm, dataSuspect, dataDe
         data: dataConfirm
       },
       {
-        name: '累计疑似',
+        name: '累计治愈',  //换为治愈
         type: 'line',
         smooth: true,
         data: dataSuspect

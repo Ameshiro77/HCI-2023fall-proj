@@ -17,7 +17,6 @@
         :options="chinaDayList"
         :init-options="initOptions"
         autoresize
-        @click="handleClick"
       ></e-charts>
     </figure>
     <figure style="width:40%">
@@ -25,6 +24,7 @@
         ref="map"
         :options="map"
         :init-options="initOptions"
+        @click="handleClick"
         autoresize
       ></e-charts>
     </figure>
@@ -69,8 +69,8 @@ export default {
   },
   methods: {
     handleClick (params) {
-      let provincePinyin = getPinyinByName(params.name)
-      this.$router.push(`/${provincePinyin}`)
+      this.update(params.name)
+      //this.$router.push(`/${provincePinyin}`)
     },
 
     // 该函数为：点击数据说明，然后弹出画面
@@ -91,12 +91,30 @@ export default {
           </div>
         `
       })
+    },
+    async update(name){
+     const {
+      updateTime,
+      total,
+      map,
+      table,
+      chinaDayList,
+      today
+    } = await buildMapData(name)
+    console.log(chinaDayList)
+    this.chinaDayList = chinaDayList
+    this.updateTime = updateTime
+    this.today = today
+    this.total = total
+    this.table = table
+    this.map = map
     }
     
   },
-  created () {
+  async created () {
     let province = this.$route.path.substr(1)
     this.provinceName = getNameByPinyin(province)
+    console.log(this.provinceName)
     const {
       updateTime,
       total,
@@ -104,9 +122,10 @@ export default {
       table,
       chinaDayList,
       today
-    } = buildMapData(this.provinceName)
+    } = await buildMapData(this.provinceName)
 
     this.chinaDayList = chinaDayList
+    console.log(this.chinaDayList)
     this.updateTime = updateTime
     this.today = today
     this.total = total

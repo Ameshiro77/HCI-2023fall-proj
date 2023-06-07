@@ -110,11 +110,22 @@ function getAll(){
   req.get('')
   .then(res=>{
     //let rawData = JSON.parse(res.data.replace(/^jsoncallback\(|\)\;/g, '')).data.list
-    console.log(res.data)
-    let rawData=res.data
+    console.log(res)
+    let rawData=res.data.data
     fs.writeFileSync('./src/data/a.json', JSON.stringify(rawData))
   })
 
+}
+function getProvinces(province){
+  const req= axios.create({
+    baseURL: 'https://gwpre.sina.cn/interface/news/ncp/data.d.json?mod=province&province='+province
+  })
+  req.get('')
+  .then(res=>{
+    rawData=res.data.data
+    //console.log(res.data)
+    fs.writeFileSync(`src/data/provinces/${province}.json`, JSON.stringify(rawData))
+  })
 }
 const provinces = [
     'anhui', 'beijing', 'chongqing', 'fujian', 'gansu', 'guangdong', 'guangxi',
@@ -124,7 +135,7 @@ const provinces = [
     'xizang', 'xinjiang', 'yunnan', 'zhejiang'
   ];
 provinces.forEach(function(element){
-    getProvince(element);
+    getProvinces(element);
 });
 //getProvince('shanghai')
 //getData()

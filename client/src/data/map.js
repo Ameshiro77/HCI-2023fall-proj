@@ -4,8 +4,26 @@ import buildLineConfig from './config_line'
 import buildMapConfig from './config_map'
 import chinaMap from '../data/china.json'
 import area from './area.json'
-
-export default function buildMapData (province) {
+const axios = require('axios')
+function getProvince(province){
+  return new Promise((resolve, reject) => {
+    axios.get(`http://localhost:8080/provinces/${getPinyinByName(province)}.json`)
+      .then(response => {
+        resolve(response.data);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+export default async function buildMapData (province) {
+  var flag=1
+  if(province==null){
+    province='上海';
+    flag=0;
+  }
+  const provinceData = await getProvince(province);
+  console.log(provinceData)
   const mapData = {
     updateTime: area.lastUpdateTime,
     total: null,
@@ -15,12 +33,13 @@ export default function buildMapData (province) {
     isProvince: false,
     chinaDayList: null
   }
-
+  
   const provinces = area.areaTree[0].children
   const provincePinyin = getPinyinByName(province)
   const result = []
-
-  if (province) {
+  const province_data=provinceData['historylist']
+  //console.log(province_data)
+  if (flag) {
     require(`echarts/map/js/province/${provincePinyin}`)
     // ECharts.registerMap(provincePinyin, provinceMap)
 
@@ -50,24 +69,26 @@ export default function buildMapData (province) {
         value: p.total.confirm
       })
     })
+    mapData.map = buildMapConfig(null, result)
+    mapData.total = area.chinaTotal
+    mapData.today = area.chinaAdd
+    mapData.table = area.areaTree[0].children
+  }
 
     const xAxis = []
     const dataConfirm = []
     const dataSuspect = []
     const dataDead = []
-    area.chinaDayList.forEach(day => {
-      xAxis.push(day.date)
-      dataConfirm.push(day.confirm)
-      dataSuspect.push(day.suspect)
-      dataDead.push(day.dead)
+    province_data.forEach(day=>{
+      xAxis.push(day.ymd)
+      dataConfirm.push(day.conNum)
+      dataSuspect.push(day.cureNum)
+      dataDead.push(day.deathNum)
     })
 
-    mapData.total = area.chinaTotal
-    mapData.today = area.chinaAdd
-    mapData.table = area.areaTree[0].children
-    mapData.map = buildMapConfig(province, result)
     mapData.chinaDayList = buildLineConfig(xAxis, dataConfirm, dataSuspect, dataDead)
-  }
+  
+  console.log(mapData)
 
   return mapData
 }
