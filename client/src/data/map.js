@@ -35,11 +35,12 @@ export default async function buildMapData (province) {
   }
   
   const provinces = area.areaTree[0].children
-  const provincePinyin = getPinyinByName(province)
+  var provincePinyin = getPinyinByName(province)
   const result = []
   const province_data=provinceData['historylist']
   //console.log(province_data)
   if (flag) {
+    if(provincePinyin=='shanxis')provincePinyin='shanxi1';  //适应地图
     require(`echarts/map/js/province/${provincePinyin}`)
     // ECharts.registerMap(provincePinyin, provinceMap)
 

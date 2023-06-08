@@ -75,7 +75,7 @@ export default {
     },
     //处理返回事件
     goback(){
-      this.update(null);
+      this.update(null);   //传入null表示返回中国地图
     },
 
     // 该函数为：点击数据说明，然后弹出画面
@@ -98,6 +98,7 @@ export default {
       })
     },
     async update(name){
+      console.log(name)
      const {
       updateTime,
       total,
