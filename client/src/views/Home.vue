@@ -100,14 +100,12 @@ export default {
       let confirm=[]  //累计确诊
       let num=[]      //累计感染总数
       let xAxis = []  //x轴
-      console.log(res.data)
       for(let i=0;i<res.data[0].length;i++){
         xAxis.push(i+1);    //先不标日期,从第1天开始
         confirm.push(res.data[0][i][0]);
         num.push(res.data[1][i][0]); 
       }
-      this.predictList=buildPredictConfig(xAxis,num,confirm)
-      //console.log(num)
+      this.predictList=buildPredictConfig(xAxis,confirm,num)
     })
 
     },
