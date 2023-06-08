@@ -19,6 +19,7 @@
         autoresize
       ></e-charts>
     </figure>
+    <el-button type="primary" icon="el-icon-back" class="go" @click="goback">返回</el-button>
     <figure style="width:40%">
       <e-charts
         ref="map"
@@ -71,6 +72,10 @@ export default {
     handleClick (params) {
       this.update(params.name)
       //this.$router.push(`/${provincePinyin}`)
+    },
+    //处理返回事件
+    goback(){
+      this.update(null);
     },
 
     // 该函数为：点击数据说明，然后弹出画面
@@ -141,9 +146,13 @@ export default {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 .all{
-  margin-top: 20px;
+  margin-top: 10px;
   display:flex;
   width:100%;
+}
+.go{
+  height: 6vh;
+  width: auto;
 }
 
 </style>
