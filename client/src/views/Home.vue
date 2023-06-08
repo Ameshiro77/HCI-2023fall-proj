@@ -2,7 +2,7 @@
   <div>
     <!-- Header：标题和截止时间 -->
     <div class="data-statement">
-      <div class="statement-title">全国疫情状况</div>
+      <div class="statement-title">{{showname}}疫情状况</div>
       <div class="update-time">截止 {{updateTime}}</div>
       <div class="shuoming" @click="handleModal"><span>数据说明</span></div>
     </div>
@@ -29,11 +29,18 @@
         autoresize
       ></e-charts>
     </figure>
-    <div>
-    <advice></advice>
-    </div>
+    <figure>
+      <e-charts
+        ref="line"
+        :options="predictList"
+        :init-options="initOptions"
+        autoresize
+      ></e-charts>
+    </figure>
    </div>
-
+   <div>
+    <advice></advice>
+   </div>
     <div class="section-title">国内病例</div>
     <e-table :data="table"></e-table>
   </div>
@@ -46,7 +53,9 @@ import ETable from '../components/Table.vue'
 import ECharts from '../components/ECharts.vue'
 import ESummary from '../components/Summary.vue'
 import { getNameByPinyin, getPinyinByName } from '../data/zhen'
+import buildPredictConfig from '../data/config_predict'
 import advice from '../components/advice.vue'
+const axios = require('axios')
 export default {
   components: {
     ETable,
@@ -65,17 +74,42 @@ export default {
       provinceName: '',
       initOptions: {
         renderer: 'canvas'
-      }
+      },
+      predictList:null,   //用于存储预测的折线图数据
+      showname:''  //显示省份名还是全国名
     }
   },
   methods: {
     handleClick (params) {
       this.update(params.name)
+      this.getPredict(params.name)
       //this.$router.push(`/${provincePinyin}`)
     },
     //处理返回事件
     goback(){
       this.update(null);   //传入null表示返回中国地图
+    },
+    //从后端获取预测数据并展示,传入省份名称
+    getPredict(province){
+      let name=getPinyinByName(province)
+        var req= axios.create({
+      baseURL: `http://127.0.0.1:8081/predict?province_name=${name}`
+    })
+    req.get('')
+    .then(res=>{
+      let confirm=[]  //累计确诊
+      let num=[]      //累计感染总数
+      let xAxis = []  //x轴
+      console.log(res.data)
+      for(let i=0;i<res.data[0].length;i++){
+        xAxis.push(i+1);    //先不标日期,从第1天开始
+        confirm.push(res.data[0][i][0]);
+        num.push(res.data[1][i][0]); 
+      }
+      this.predictList=buildPredictConfig(xAxis,num,confirm)
+      //console.log(num)
+    })
+
     },
 
     // 该函数为：点击数据说明，然后弹出画面
@@ -105,7 +139,8 @@ export default {
       map,
       table,
       chinaDayList,
-      today
+      today,
+      province_name
     } = await buildMapData(name)
     console.log(chinaDayList)
     this.chinaDayList = chinaDayList
@@ -114,6 +149,7 @@ export default {
     this.total = total
     this.table = table
     this.map = map
+    this.showname=province_name
     }
     
   },
@@ -137,6 +173,7 @@ export default {
     this.total = total
     this.table = table
     this.map = map
+    this.getPredict('上海')
   }
 }
 </script>

@@ -23,7 +23,7 @@ return:
 """
 def getData(province_name):
     confirmed_file=f'results/results_confirmed/{province_name}.csv'
-    num_file=f'results/results_num/{province_name}.csv'
+    num_file=f'results/results_num/{province_name}_num.csv'
     confirmed = pd.read_csv(confirmed_file)
     confirmed  = confirmed .values.tolist()
     num = pd.read_csv(num_file)
@@ -57,4 +57,4 @@ def main():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8080)
+    app.run(debug=True, host='0.0.0.0', port=8081)

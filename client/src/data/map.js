@@ -23,16 +23,17 @@ export default async function buildMapData (province) {
     flag=0;
   }
   const provinceData = await getProvince(province);
-  console.log(provinceData)
   const mapData = {
-    updateTime: area.lastUpdateTime,
+    updateTime: provinceData['cachetime'],
     total: null,
     today: null,
     map: null,
     table: null,
     isProvince: false,
-    chinaDayList: null
+    chinaDayList: null,
+    province_name:province   //获取省份名称
   }
+  if(flag==0)mapData.province_name="全国"
   
   const provinces = area.areaTree[0].children
   var provincePinyin = getPinyinByName(province)
@@ -80,7 +81,7 @@ export default async function buildMapData (province) {
     const dataConfirm = []
     const dataSuspect = []
     const dataDead = []
-    province_data.forEach(day=>{
+    province_data.reverse().forEach(day=>{
       xAxis.push(day.ymd)
       dataConfirm.push(day.conNum)
       dataSuspect.push(day.cureNum)
@@ -89,7 +90,6 @@ export default async function buildMapData (province) {
 
     mapData.chinaDayList = buildLineConfig(xAxis, dataConfirm, dataSuspect, dataDead)
   
-  console.log(mapData)
 
   return mapData
 }

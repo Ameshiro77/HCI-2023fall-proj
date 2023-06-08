@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="margin-top: 10vh;">
       <h1>医疗建议</h1>
       <div class="advice">
         <p>在感冒期间，请多休息，多喝水，保持充足的睡眠。</p>
