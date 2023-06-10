@@ -1,5 +1,11 @@
 export default function buildLineConfig (xAxis, dataConfirm, dataSuspect, dataDead) {
   return {
+    dataZoom: [{
+      type: 'slider',  // 使用滑动条控制缩放
+      xAxisIndex: 0,   // 设置控制的 x 轴索引
+      start: 0,        // 默认缩放起始位置
+      end: 100,        // 默认缩放结束位置
+    }],
     title: {
       text: '疫情累计趋势(人)'
     },

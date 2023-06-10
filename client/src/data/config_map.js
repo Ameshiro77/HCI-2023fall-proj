@@ -17,6 +17,7 @@ export default function buildMapConfig (province, data) {
           '#9c0505'
         ]
       },
+     
       pieces: [
         { min: 1000 },
         { min: 500, max: 999 },
@@ -41,6 +42,7 @@ export default function buildMapConfig (province, data) {
         position: 'inside',
         fontSize: 6
       },
+      
       mapType: province || 'china',
       data: data,
       zoom: 1.2,
@@ -52,7 +54,9 @@ export default function buildMapConfig (province, data) {
         brushType: 'stroke',
         scale: 2.5,
         period: 4
-      }
+      },
+      animation: true, // 启用过渡动画
+      animationDuration: 1000, // 过渡动画持续时间，单位为毫秒
     }]
   }
 }
