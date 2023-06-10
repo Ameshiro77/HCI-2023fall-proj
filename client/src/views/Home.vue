@@ -14,7 +14,7 @@
 
       <figure class="left-pic">
         <e-charts
-          ref="line"
+          ref="left_line"
           :options="chinaDayList"
           :init-options="initOptions"
           autoresize
@@ -40,7 +40,7 @@
 
       <figure class="right-pic">
         <e-charts
-          ref="line"
+          ref="right_line"
           :options="predictList"
           :init-options="initOptions"
           autoresize
@@ -48,7 +48,11 @@
       </figure>
     </div>
     <div>
-      <advice></advice>
+      <detect
+      @left_event="updateleftLine" 
+      @right_event="updaterightLine"
+      />
+
     </div>
     <div class="section-title">国内病例</div>
     <e-table :data="table"></e-table>
@@ -64,6 +68,8 @@ import ESummary from "../components/Summary.vue";
 import { getNameByPinyin, getPinyinByName } from "../data/zhen";
 import buildPredictConfig from "../data/config_predict";
 import advice from "../components/advice.vue";
+import detect from "../components/detect.vue"
+import echarts from 'echarts';
 const axios = require("axios");
 export default {
   components: {
@@ -71,6 +77,7 @@ export default {
     ECharts,
     ESummary,
     advice,
+    detect,
   },
   data() {
     return {
@@ -86,6 +93,10 @@ export default {
       },
       predictList: null, //用于存储预测的折线图数据
       showname: "", //显示省份名还是全国名
+      left_start:0,
+      left_end:100,
+      right_start:0,
+      right_end:100,
     };
   },
   methods: {
@@ -156,6 +167,36 @@ export default {
       this.map = map;
       this.showname = province_name;
     },
+    //进行左折线图更新
+    updateleftLine(data){
+    let option = this.$refs.left_line.options;
+    if(data.message=='small'&&option.dataZoom[0].end-option.dataZoom[0].start>10){
+      option.dataZoom[0].start +=1;
+      option.dataZoom[0].end -=1;
+    }
+    else if(data.message=='large'&&option.dataZoom[0].end-option.dataZoom[0].start<100){
+      option.dataZoom[0].start-=1;
+      option.dataZoom[0].end +=1;
+    }
+    
+    this.$refs.left_line.option=option;
+
+  },
+  //子组件调用该方法进行右折线图缩放扩张
+  updaterightLine(data){
+    let option = this.$refs.right_line.options;
+    if(data.message=='small'&&option.dataZoom[0].end-option.dataZoom[0].start>10){
+      option.dataZoom[0].start +=1;
+      option.dataZoom[0].end -=1;
+    }
+    else if(data.message=='large'&&option.dataZoom[0].end-option.dataZoom[0].start<100){
+      option.dataZoom[0].start-=1;
+      option.dataZoom[0].end +=1;
+    }
+    
+    this.$refs.right_line.option=option;
+
+},
   },
   async created() {
     let province = this.$route.path.substr(1);
@@ -173,6 +214,7 @@ export default {
     this.map = map;
     this.getPredict("上海");
   },
+  //子组件调用该方法进行左折线图缩放扩张
 };
 </script>
 <style>
