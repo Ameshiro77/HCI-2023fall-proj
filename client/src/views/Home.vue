@@ -64,10 +64,10 @@
     <div class="medical-advice">
       <el-card style="border-radius: 8px; width: 100%">
         <div style="text-align: left; line-height: 18px">
-          <span> 当前 </span>
           <span style="font-weight: bold">{{ displayName }}地区</span>
           <span> 疫情程度：{{ classify }}</span>
         </div>
+        <div style="height: 15px"></div>
         <div style="text-align: left; line-height: 18px">
           <span> 医疗建议：{{ medical_advice }}</span>
         </div>
@@ -75,7 +75,6 @@
     </div>
 
     <!-- 检测按钮 -->
-
 
     <!-- 国内病例 -->
     <div class="section-title">国内病例</div>
@@ -154,10 +153,12 @@ export default {
           confirm.push(res.data[0][i][0]);
           num.push(res.data[1][i][0]);
         }
-        const startDate = moment('2022-01-02', 'YYYY-MM-DD');
+        const startDate = moment("2022-01-02", "YYYY-MM-DD");
 
         const dateSeries = xAxis.map((index) => {
-          return moment(startDate).add(index - 1, 'days').format('YYYY-MM-DD');
+          return moment(startDate)
+            .add(index - 1, "days")
+            .format("YYYY-MM-DD");
         });
 
         this.predictList = buildPredictConfig(dateSeries, confirm, num);
@@ -281,6 +282,24 @@ export default {
     this.table = table;
     this.map = map;
     this.getPredict("上海");
+
+    // 根据total获得建议和类别
+    axios({
+      method: "get",
+      url: "http://127.0.0.1:8081/advice",
+      params: {
+        confirm: this.total.confirm,
+        suspect: this.total.suspect,
+        heal: this.total.heal,
+        dead: this.total.dead,
+      },
+    })
+      .then((response) => {
+        console.log(response.data);
+        this.classify = response.data.classify;
+        this.medical_advice = response.data.advice;
+      })
+      .catch(() => {});
   },
   //子组件调用该方法进行左折线图缩放扩张
 };
