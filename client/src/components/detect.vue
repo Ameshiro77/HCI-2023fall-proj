@@ -1,8 +1,15 @@
 <template>
-  <div>
-    <video ref="videoElement" width="200" height="200"></video>
-    <button @click="startHandTracking">开始手势识别</button>
-  </div>
+  <div
+  ref="draggableElement"
+  style="position: absolute; top: 0; left:20; width: 200px; height: 200px; background-color: gray;"
+  draggable="true"
+  @dragstart="dragStart"
+  @dragend="dragEnd"
+>
+  <video ref="videoElement" width="200" height="200"></video>
+  <button @click="startHandTracking" v-if="!isTracking">开始手势识别</button>
+    <button @click="stopHandTracking" v-else>停止手势识别</button>
+</div>
 </template>
 <script>
 import * as handTrack from "handtrackjs";
@@ -13,12 +20,45 @@ export default {
       head_x: 1.0, //头部x坐标
       hand_x: 1.0, //左手x坐标
       center_x: 65,
+      isTracking: false,
     };
   },
   methods: {
+    dragStart(event) {
+      // 设置拖动时的数据传输类型和数据
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', '');
+      
+      // 记录鼠标位置与元素左上角的偏移量
+      const offsetX = event.clientX - event.target.offsetLeft;
+      const offsetY = event.clientY - event.target.offsetTop;
+      event.dataTransfer.setData('offsetX', offsetX);
+      event.dataTransfer.setData('offsetY', offsetY);
+    },
+    dragEnd(event) {
+      event.preventDefault();
+      
+      // 获取拖动时的偏移量
+      const offsetX = event.dataTransfer.getData('offsetX');
+      const offsetY = event.dataTransfer.getData('offsetY');
+      
+      // 根据拖动结束时的鼠标位置更新元素的位置
+      const left = event.clientX - offsetX;
+      const top = event.clientY - offsetY;
+      event.target.style.left = left + 'px';
+      event.target.style.top = top + 'px';
+    },
+    stopHandTracking() {
+      // 停止视频流
+      handTrack.stopVideo(this.$refs.videoElement);
+      this.$refs.videoElement.style.width = "0px";
+            this.$refs.videoElement.style.height = "0px";
+      // 设置手势识别状态为false
+      this.isTracking = false;
+    },
     async startHandTracking() {
       const videoElement = this.$refs.videoElement;
-
+      this.isTracking = true;
       const modelParams = {
         flipHorizontal: true, // 镜像翻转
         maxNumBoxes: 3, // 最大检测框数量
@@ -34,7 +74,7 @@ export default {
             console.log("手势识别已启动");
             this.$refs.videoElement.style.width = "400px";
             this.$refs.videoElement.style.height = "400px";
-            console.log("得到w",this.$refs.videoElement.style.width)
+            //console.log("得到w",this.$refs.videoElement.style.width)
             // 开始检测手势
             this.detectHandGesture(model);
           } else {

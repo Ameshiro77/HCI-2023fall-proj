@@ -6,7 +6,9 @@
       <div class="update-time">截止 {{ updateTime }}</div>
       <div class="shuoming" @click="handleModal"><span>数据说明</span></div>
     </div>
-
+    <div>
+      <detect @left_event="updateleftLine" @right_event="updaterightLine" />
+    </div>
     <!-- 总的疫情数据统计 -->
     <e-summary :total="total" :today="today"></e-summary>
 
@@ -68,9 +70,7 @@
     </div>
 
     <!-- 检测按钮 -->
-    <div style="position: absolute; right: 4%; top: 0px">
-      <detect @left_event="updateleftLine" @right_event="updaterightLine" />
-    </div>
+
 
     <!-- 国内病例 -->
     <div class="section-title">国内病例</div>
@@ -90,6 +90,7 @@ import advice from "../components/advice.vue";
 import detect from "../components/detect.vue";
 import echarts from "echarts";
 const axios = require("axios");
+const moment = require("moment");
 export default {
   components: {
     ETable,
@@ -148,7 +149,13 @@ export default {
           confirm.push(res.data[0][i][0]);
           num.push(res.data[1][i][0]);
         }
-        this.predictList = buildPredictConfig(xAxis, confirm, num);
+        const startDate = moment('2022-01-02', 'YYYY-MM-DD');
+
+        const dateSeries = xAxis.map((index) => {
+          return moment(startDate).add(index - 1, 'days').format('YYYY-MM-DD');
+        });
+
+        this.predictList = buildPredictConfig(dateSeries, confirm, num);
       });
     },
 
