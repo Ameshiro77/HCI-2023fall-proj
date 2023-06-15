@@ -1,13 +1,18 @@
 <template>
   <div>
     <!-- Header：标题和截止时间 -->
+    <div class="all">
+      <div class="left_pic">
+      <detect @left_event="updateleftLine" @right_event="updaterightLine" />
+    </div>
+    <div style="width: 70%;display: flex;justify-content: center;align-items: center;">
+      <span class="title">疫情可视化系统</span>
+    </div>
+    </div>
     <div class="data-statement">
       <div class="statement-title">{{ showname }}疫情状况</div>
       <div class="update-time">截止 {{ updateTime }}</div>
       <div class="shuoming" @click="handleModal"><span>数据说明</span></div>
-    </div>
-    <div>
-      <detect @left_event="updateleftLine" @right_event="updaterightLine" />
     </div>
     <!-- 总的疫情数据统计 -->
     <e-summary :total="total" :today="today"></e-summary>
@@ -305,5 +310,13 @@ export default {
   width: 100%;
 }
 .go {
+}
+.title{
+    font-size: 70px;
+    font-weight: bold;
+    color: rgb(66, 120, 133);
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+
 }
 </style>

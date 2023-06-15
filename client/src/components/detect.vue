@@ -1,19 +1,23 @@
 <template>
   <div
   ref="draggableElement"
-  style="position: absolute; top: 0; left:20; width: 200px; height: 200px; background-color: gray;"
+  style="width: 200px; height: 200px;padding-bottom: 230px;"
   draggable="true"
   @dragstart="dragStart"
   @dragend="dragEnd"
 >
-  <video ref="videoElement" width="200" height="200"></video>
+  <video ref="videoElement" width="200" height="200 "></video>
   <button @click="startHandTracking" v-if="!isTracking">开始手势识别</button>
     <button @click="stopHandTracking" v-else>停止手势识别</button>
 </div>
 </template>
 <script>
 import * as handTrack from "handtrackjs";
+import draggable from 'vuedraggable'
 export default {
+  components: {
+    draggable
+  },
   props: {},
   data() {
     return {
@@ -72,8 +76,8 @@ export default {
         handTrack.startVideo(videoElement).then((status) => {
           if (status) {
             console.log("手势识别已启动");
-            this.$refs.videoElement.style.width = "400px";
-            this.$refs.videoElement.style.height = "400px";
+            this.$refs.videoElement.style.width = "200px";
+            this.$refs.videoElement.style.height = "200px";
             //console.log("得到w",this.$refs.videoElement.style.width)
             // 开始检测手势
             this.detectHandGesture(model);
